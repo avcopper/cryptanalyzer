@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.filechooser.FileFilter;
-
 import com.javarush.cryptanalyzer.cooper.app.Caesar;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
+//import com.javarush.cryptanalyzer.cooper.view.Window;
 
 public class WindowListener implements ActionListener {
-    com.javarush.cryptanalyzer.cooper.view.Window frame;
+    Window frame;
 
     public WindowListener(Window frame) {
         this.frame = frame;
@@ -50,7 +50,11 @@ public class WindowListener implements ActionListener {
                 }
                 break;
             case AppWindow.ANALYSIS:
-                showError("Jopa");
+                try {
+                    tryToDoSomethingStupid();
+                } catch (IOException ex) {
+                    showError(ex.getMessage());
+                }
                 break;
             case AppWindow.OPEN_FILE:
                 try {
@@ -84,7 +88,7 @@ public class WindowListener implements ActionListener {
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Выбор файла");
-        fileChooser.setCurrentDirectory(new File("C:\\"));
+        fileChooser.setCurrentDirectory(new File("C:\\JAVA\\cryptanalyzer"));
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(new FileFilter() {
             @Override
@@ -147,6 +151,16 @@ public class WindowListener implements ActionListener {
         Caesar caesar = new Caesar();
         caesar.bruteForceCryptTextToFile(file, decodedFile);
         frame.showResult(decodedFile, caesar.getOffset(), AppWindow.APP_RESULT_DECRYPT);
+    }
+
+    private void tryToDoSomethingStupid() throws IOException {
+        frame.clearResult();
+
+        Path file = frame.getFilePath(AppWindow.TYPE_FILE);
+        Path dictionary = frame.getFilePath(AppWindow.TYPE_DICTIONARY);
+        Path decodedFile = Path.of(AppWindow.DEFAULT_DECODED_FILE);
+        Caesar.analyseText(file, dictionary, decodedFile);
+        frame.showResult(decodedFile, 0, AppWindow.APP_RESULT_ANALYSE);
     }
 
     /**
