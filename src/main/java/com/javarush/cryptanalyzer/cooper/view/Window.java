@@ -327,7 +327,7 @@ public class Window extends JFrame {
      */
     public void showResult(Path file, int key, String message) {
         if (file != null && Files.isRegularFile(file) && Files.isDirectory(file.toAbsolutePath().getParent())) {
-            messageLabel.setText(message + Math.abs(key));
+            messageLabel.setText(message + (key != 0 ? Math.abs(key) : ""));
             resultFileLabel.setText(file.toAbsolutePath().toString());
             fileOpenButton.setEnabled(true);
             dirOpenButton.setEnabled(true);
