@@ -87,7 +87,7 @@ public class WindowListener implements ActionListener {
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Выбор файла");
-        fileChooser.setCurrentDirectory(new File("C:\\JAVA\\cryptanalyzer"));
+        fileChooser.setCurrentDirectory(new File("C:\\"));
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(new FileFilter() {
             @Override
