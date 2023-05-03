@@ -92,7 +92,7 @@ public class Caesar {
             decodedLines.replace(i, i + 1, String.valueOf(newChar));
         }
 
-         Files.writeString(toFile, encodedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+         Files.writeString(toFile, decodedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     /**
