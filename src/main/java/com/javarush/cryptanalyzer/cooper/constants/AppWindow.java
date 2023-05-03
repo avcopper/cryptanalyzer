@@ -17,6 +17,7 @@ public class AppWindow {
             "</html>";
     public static final String APP_RESULT_ENCRYPT = "File encoded. Key ";
     public static final String APP_RESULT_DECRYPT = "File decoded. Key ";
+    public static final String APP_RESULT_ANALYSE = "File decoded.";
 
     public static final String ENCRYPT = "Encrypt";
     public static final String DECRYPT = "Decrypt";
