@@ -137,7 +137,7 @@ public class Window extends JFrame {
 
         JButton fileButton = new JButton(AppWindow.FILE_ENCRYPT_DECRYPT);
         fileButton.setPreferredSize(dimension);
-        filePathLabel = new JLabel(AppWindow.DEFAULT_ENCODED_FILE);
+        filePathLabel = new JLabel(AppWindow.DEFAULT_INPUT_FILE);
 
         JButton fileAnalysisButton = new JButton(AppWindow.FILE_DICTIONARY);
         fileAnalysisButton.setPreferredSize(dimension);
