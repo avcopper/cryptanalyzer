@@ -5,7 +5,6 @@ import java.awt.*;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import javax.swing.border.EmptyBorder;
-
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
 import com.javarush.cryptanalyzer.cooper.constants.Exception;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
@@ -16,7 +15,7 @@ public class Window extends JFrame {
 
     WindowListener windowListener;
     JPanel jPanelTop, jPanelMiddle, jPanelBottom;
-    JLabel filePathLabel, fileAnalysisPathLabel;
+    JLabel filePathLabel, dictionaryPathLabel;
     JTextField offsetTextField;
     JLabel messageLabel, resultFileLabel;
     JButton fileOpenButton, dirOpenButton;
@@ -138,11 +137,11 @@ public class Window extends JFrame {
 
         JButton fileButton = new JButton(AppWindow.FILE_ENCRYPT_DECRYPT);
         fileButton.setPreferredSize(dimension);
-        filePathLabel = new JLabel(AppWindow.DEFAULT_INPUT_FILE);
+        filePathLabel = new JLabel(AppWindow.DEFAULT_ENCODED_FILE);
 
         JButton fileAnalysisButton = new JButton(AppWindow.FILE_DICTIONARY);
         fileAnalysisButton.setPreferredSize(dimension);
-        fileAnalysisPathLabel = new JLabel(AppWindow.DEFAULT_DICTIONARY_FILE);
+        dictionaryPathLabel = new JLabel(AppWindow.DEFAULT_DICTIONARY_FILE);
 
         offsetTextField = new JTextField();
         offsetTextField.setMinimumSize(dimension);
@@ -170,7 +169,7 @@ public class Window extends JFrame {
         jPanelTop.add(fileAnalysisButton, gridBagConstraints);
         gridBagConstraints.weightx = 0.8;
         gridBagConstraints.gridx = 1;
-        jPanelTop.add(fileAnalysisPathLabel, gridBagConstraints);
+        jPanelTop.add(dictionaryPathLabel, gridBagConstraints);
         gridBagConstraints.weightx = 0.2;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -279,7 +278,7 @@ public class Window extends JFrame {
      * @param path - путь к файлу
      */
     public void setAnalysisFilePath(String path) {
-        fileAnalysisPathLabel.setText(path);
+        dictionaryPathLabel.setText(path);
     }
 
     /**
@@ -289,7 +288,7 @@ public class Window extends JFrame {
     public Path getFilePath(String fileType) {
         String file = null;
         if (fileType.equals(AppWindow.TYPE_FILE)) file = filePathLabel.getText();
-        else if (fileType.equals(AppWindow.TYPE_DICTIONARY)) file = fileAnalysisPathLabel.getText();
+        else if (fileType.equals(AppWindow.TYPE_DICTIONARY)) file = dictionaryPathLabel.getText();
 
         if (file == null) throw new UserException(Exception.FILE_NOT_SELECTED);
 
@@ -332,8 +331,8 @@ public class Window extends JFrame {
             resultFileLabel.setText(file.toAbsolutePath().toString());
             fileOpenButton.setEnabled(true);
             dirOpenButton.setEnabled(true);
-            fileOpenButton.setVisible(true);
-            dirOpenButton.setVisible(true);
+            //fileOpenButton.setVisible(true);
+            //dirOpenButton.setVisible(true);
         }
     }
 
@@ -345,7 +344,7 @@ public class Window extends JFrame {
         resultFileLabel.setText(" ");
         fileOpenButton.setEnabled(false);
         dirOpenButton.setEnabled(false);
-        fileOpenButton.setVisible(false);
-        dirOpenButton.setVisible(false);
+        //fileOpenButton.setVisible(false);
+        //dirOpenButton.setVisible(false);
     }
 }
