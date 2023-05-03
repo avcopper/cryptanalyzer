@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import javax.swing.filechooser.FileFilter;
 import com.javarush.cryptanalyzer.cooper.app.Caesar;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
-//import com.javarush.cryptanalyzer.cooper.view.Window;
 
 public class WindowListener implements ActionListener {
     Window frame;
