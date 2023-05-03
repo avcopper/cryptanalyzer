@@ -1,5 +1,6 @@
 package com.javarush.cryptanalyzer.cooper.app;
 
+import java.util.*;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.nio.file.StandardOpenOption;
 import com.javarush.cryptanalyzer.cooper.constants.CryptoAlphabet;
+import com.javarush.cryptanalyzer.cooper.utils.ValueComparator;
 
 public class Caesar {
     private int offset;
@@ -56,6 +58,41 @@ public class Caesar {
         }
 
         return null;
+    }
+
+    /**
+     * Пытается анализировать частоту вхождений символов из словаря и экстраполировать ее на частоту символов в зашифрованном тексте
+     * Получается, конечно же, откровенная дичь даже на гигантских объемах текста (в качестве библиотеки весь роман Братья Карамазовы...)
+     * Без ручной доработки текста никак не обойтись...
+     * @param fromFile - зашифрованный файл
+     * @param dictionary - словарь этого же автора
+     * @param toFile - расшифрованный файл
+     * @throws IOException
+     */
+    public static void analyseText(Path fromFile, Path dictionary, Path toFile) throws IOException {
+        String encodedLines = Files.readString(fromFile);
+        String dictionaryLines = Files.readString(dictionary);
+
+        Map<Character, Integer> sortedInputCharsMap = getAnalysedTextMap(encodedLines);
+        Map<Character, Integer> sortedDictionaryCharsMap = getAnalysedTextMap(dictionaryLines);
+
+        List<Character> textKeyList = new ArrayList<>(sortedInputCharsMap.keySet());
+        List<Character> dictionaryKeyList = new ArrayList<>(sortedDictionaryCharsMap.keySet());
+
+        StringBuilder decodedLines = new StringBuilder(encodedLines);
+        char oldChar, newChar;
+
+        for (int i = 0; i < decodedLines.length(); i++) {
+            oldChar = decodedLines.charAt(i);
+            int index = textKeyList.indexOf(oldChar);
+
+            if (index == -1 || index >= dictionaryKeyList.size()) continue;
+
+            newChar = dictionaryKeyList.get(index);
+            decodedLines.replace(i, i + 1, String.valueOf(newChar));
+        }
+
+         Files.writeString(toFile, encodedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     /**
@@ -124,5 +161,27 @@ public class Caesar {
             Math.abs(offset) < CryptoAlphabet.CAESAR_ALPHABET_LENGTH ?
                 offset :
                 offset % CryptoAlphabet.CAESAR_ALPHABET_LENGTH;
+    }
+
+    /**
+     * @param text - анализируемый текст
+     * @return - возвращает отсортированный ассоциативный массив с количеством вхождений каждого символа от большего к меньшему
+     */
+    private static Map<Character, Integer> getAnalysedTextMap(String text) {
+        Map<Character, Integer> countCharsMap = new HashMap<>();
+        ValueComparator valueComparator = new ValueComparator(countCharsMap);
+        Map<Character, Integer> sortedCharsMap = new TreeMap<>(valueComparator);
+
+        for (int i = 0; i < text.length(); i++) {
+            Character currentChar = text.charAt(i);
+
+            if (CryptoAlphabet.CAESAR_ALPHABET.indexOf(currentChar) != -1) {
+                int currentCount = countCharsMap.get(currentChar) != null ? countCharsMap.get(currentChar) : 0;
+                countCharsMap.put(currentChar, currentCount + 1);
+            }
+        }
+
+        sortedCharsMap.putAll(countCharsMap);
+        return sortedCharsMap;
     }
 }
