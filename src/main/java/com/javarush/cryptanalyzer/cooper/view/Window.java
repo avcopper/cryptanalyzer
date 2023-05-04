@@ -59,10 +59,6 @@ public class Window extends JFrame {
         add(jPanelMiddle, gridBagConstraints);
         gridBagConstraints.gridy = 2;
         add(jPanelBottom, gridBagConstraints);
-
-//        add(jPanelTop, BorderLayout.NORTH);
-//        add(jPanelMiddle, BorderLayout.CENTER);
-//        add(jPanelBottom, BorderLayout.SOUTH);
     }
 
     /**
