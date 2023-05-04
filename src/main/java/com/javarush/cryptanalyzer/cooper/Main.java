@@ -1,4 +1,4 @@
-package com.javarush.cryptanalyzer.cooper.app;
+package com.javarush.cryptanalyzer.cooper;
 
 import com.javarush.cryptanalyzer.cooper.view.Window;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
