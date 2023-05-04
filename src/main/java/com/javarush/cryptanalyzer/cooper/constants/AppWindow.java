@@ -35,11 +35,6 @@ public class AppWindow {
     public static final String OPEN_FILE = "Open file";
     public static final String OPEN_DIR = "Open dir";
 
-    public static final String DEFAULT_INPUT_FILE = "input.txt";
-    public static final String DEFAULT_ENCODED_FILE = "encoded.txt";
-    public static final String DEFAULT_DECODED_FILE = "output.txt";
-    public static final String DEFAULT_DICTIONARY_FILE = "dictionary.txt";
-
     public static final String TYPE_FILE = "file";
     public static final String TYPE_DICTIONARY = "dictionary";
 }
