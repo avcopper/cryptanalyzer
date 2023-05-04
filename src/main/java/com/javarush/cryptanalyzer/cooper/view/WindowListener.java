@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.filechooser.FileFilter;
 import com.javarush.cryptanalyzer.cooper.app.Caesar;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
+import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
 
 public class WindowListener implements ActionListener {
     Window frame;
@@ -87,7 +88,7 @@ public class WindowListener implements ActionListener {
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Выбор файла");
-        fileChooser.setCurrentDirectory(new File("C:\\"));
+        fileChooser.setCurrentDirectory(new File("./"));
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(new FileFilter() {
             @Override
@@ -118,7 +119,7 @@ public class WindowListener implements ActionListener {
         frame.clearResult();
 
         Path file = frame.getFilePath(AppWindow.TYPE_FILE);
-        Path encodedFile = Path.of(AppWindow.DEFAULT_ENCODED_FILE);
+        Path encodedFile = Path.of(DefaultFiles.ENCODED_FILE);
         Caesar caesar = new Caesar(frame.getKey());
         caesar.cryptTextToFile(file, encodedFile);
         frame.showResult(encodedFile, caesar.getOffset(), AppWindow.APP_RESULT_ENCRYPT);
@@ -132,7 +133,7 @@ public class WindowListener implements ActionListener {
         frame.clearResult();
 
         Path file = frame.getFilePath(AppWindow.TYPE_FILE);
-        Path decodedFile = Path.of(AppWindow.DEFAULT_DECODED_FILE);
+        Path decodedFile = Path.of(DefaultFiles.DECODED_FILE);
         Caesar caesar = new Caesar(frame.getKey() * -1);
         caesar.cryptTextToFile(file, decodedFile);
         frame.showResult(decodedFile, caesar.getOffset(), AppWindow.APP_RESULT_DECRYPT);
@@ -146,7 +147,7 @@ public class WindowListener implements ActionListener {
         frame.clearResult();
 
         Path file = frame.getFilePath(AppWindow.TYPE_FILE);
-        Path decodedFile = Path.of(AppWindow.DEFAULT_DECODED_FILE);
+        Path decodedFile = Path.of(DefaultFiles.DECODED_FILE);
         Caesar caesar = new Caesar();
         caesar.bruteForceCryptTextToFile(file, decodedFile);
         frame.showResult(decodedFile, caesar.getOffset(), AppWindow.APP_RESULT_DECRYPT);
@@ -157,7 +158,7 @@ public class WindowListener implements ActionListener {
 
         Path file = frame.getFilePath(AppWindow.TYPE_FILE);
         Path dictionary = frame.getFilePath(AppWindow.TYPE_DICTIONARY);
-        Path decodedFile = Path.of(AppWindow.DEFAULT_DECODED_FILE);
+        Path decodedFile = Path.of(DefaultFiles.DECODED_FILE);
         Caesar.analyseText(file, dictionary, decodedFile);
         frame.showResult(decodedFile, 0, AppWindow.APP_RESULT_ANALYSE);
     }

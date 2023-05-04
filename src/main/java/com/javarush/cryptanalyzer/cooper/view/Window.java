@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Files;
 import javax.swing.border.EmptyBorder;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
+import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
 import com.javarush.cryptanalyzer.cooper.constants.Exception;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
 
@@ -133,11 +134,11 @@ public class Window extends JFrame {
 
         JButton fileButton = new JButton(AppWindow.FILE_ENCRYPT_DECRYPT);
         fileButton.setPreferredSize(dimension);
-        filePathLabel = new JLabel(AppWindow.DEFAULT_INPUT_FILE);
+        filePathLabel = new JLabel(DefaultFiles.INPUT_FILE);
 
         JButton fileAnalysisButton = new JButton(AppWindow.FILE_DICTIONARY);
         fileAnalysisButton.setPreferredSize(dimension);
-        dictionaryPathLabel = new JLabel(AppWindow.DEFAULT_DICTIONARY_FILE);
+        dictionaryPathLabel = new JLabel(DefaultFiles.DICTIONARY_FILE);
 
         offsetTextField = new JTextField();
         offsetTextField.setMinimumSize(dimension);
