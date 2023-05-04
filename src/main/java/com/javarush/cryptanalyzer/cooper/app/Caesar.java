@@ -71,13 +71,10 @@ public class Caesar {
      */
     public static void analyseText(Path fromFile, Path dictionary, Path toFile) throws IOException {
         String encodedLines = Files.readString(fromFile);
+        List<Character> textKeyList = getAnalysedSymbolList(encodedLines);
+
         String dictionaryLines = Files.readString(dictionary);
-
-        Map<Character, Integer> sortedInputCharsMap = getAnalysedTextMap(encodedLines);
-        Map<Character, Integer> sortedDictionaryCharsMap = getAnalysedTextMap(dictionaryLines);
-
-        List<Character> textKeyList = new ArrayList<>(sortedInputCharsMap.keySet());
-        List<Character> dictionaryKeyList = new ArrayList<>(sortedDictionaryCharsMap.keySet());
+        List<Character> dictionaryKeyList = getAnalysedSymbolList(dictionaryLines);
 
         StringBuilder decodedLines = new StringBuilder(encodedLines);
         char oldChar, newChar;
@@ -165,9 +162,9 @@ public class Caesar {
 
     /**
      * @param text - анализируемый текст
-     * @return - возвращает отсортированный ассоциативный массив с количеством вхождений каждого символа от большего к меньшему
+     * @return - возвращает список символов отсортированный по убыванию частоты использования в тексте
      */
-    private static Map<Character, Integer> getAnalysedTextMap(String text) {
+    private static List<Character> getAnalysedSymbolList(String text) {
         Map<Character, Integer> countCharsMap = new HashMap<>();
         ValueComparator valueComparator = new ValueComparator(countCharsMap);
         Map<Character, Integer> sortedCharsMap = new TreeMap<>(valueComparator);
@@ -182,6 +179,6 @@ public class Caesar {
         }
 
         sortedCharsMap.putAll(countCharsMap);
-        return sortedCharsMap;
+        return new ArrayList<>(sortedCharsMap.keySet());
     }
 }
