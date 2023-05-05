@@ -27,8 +27,6 @@ public class BruteForce implements CryptFunction {
             //Pattern aPattern = Pattern.compile("[А-Яа-яЁё]*(, |\\.){1}[А-Яа-яЁё ]*");
             Matcher aMatcher = aPattern.matcher(cryptString);
             if (aMatcher.find()) {
-                System.out.println(offset);
-                //System.out.println(cryptString);
                 Path result = Files.writeString(decodedFile, cryptString, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
             }
