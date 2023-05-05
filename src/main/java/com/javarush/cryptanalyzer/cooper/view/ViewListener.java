@@ -21,10 +21,12 @@ public class ViewListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case AppWindow.FILE_ENCRYPT_DECRYPT:
-                selectFile(AppWindow.TYPE_FILE);
+                String file = selectFile();
+                frame.setFilePath(file);
                 break;
             case AppWindow.FILE_DICTIONARY:
-                selectFile(AppWindow.TYPE_DICTIONARY);
+                String fileDict = selectFile();
+                frame.setAnalysisFilePath(fileDict);
                 break;
             case AppWindow.ENCRYPT:
                 frame.clearResult();
@@ -101,10 +103,9 @@ public class ViewListener implements ActionListener {
     }
 
     /**
-     * Выбор файла на диске
-     * @param fileType - тип файла (исходный файл/файл для аналитики)
+     * @return - возвращает путь к выбранному файлу на диске
      */
-    private void selectFile(String fileType) {
+    private String selectFile() {
         //frame.clearResult();
 
         JFileChooser fileChooser = new JFileChooser();
@@ -125,11 +126,10 @@ public class ViewListener implements ActionListener {
 
         int result = fileChooser.showOpenDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().isFile()) {
-            if (fileType.equals(AppWindow.TYPE_FILE))
-                frame.setFilePath(fileChooser.getSelectedFile().getPath());
-            else if (fileType.equals(AppWindow.TYPE_DICTIONARY))
-                frame.setAnalysisFilePath(fileChooser.getSelectedFile().getPath());
+            return fileChooser.getSelectedFile().getPath();
         }
+
+        return null;
     }
 
     /**
