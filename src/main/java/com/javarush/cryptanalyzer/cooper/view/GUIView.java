@@ -1,53 +1,51 @@
 package com.javarush.cryptanalyzer.cooper.view;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 import java.nio.file.Path;
-import java.nio.file.Files;
 import javax.swing.border.EmptyBorder;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
 import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
-import com.javarush.cryptanalyzer.cooper.constants.Exception;
-import com.javarush.cryptanalyzer.cooper.exception.UserException;
 
-public class Window extends JFrame {
+public class GUIView extends JFrame implements View {
     private final int width;
     private final int height;
 
-    WindowListener windowListener;
+    ViewListener listener;
     JPanel jPanelTop, jPanelMiddle, jPanelBottom;
     JLabel filePathLabel, dictionaryPathLabel;
     JTextField offsetTextField;
     JLabel messageLabel, resultFileLabel;
     JButton fileOpenButton, dirOpenButton;
 
-    public Window() {
+    public GUIView() {
         super(AppWindow.APP_NAME);
         this.width = AppWindow.DEFAULT_WIDTH;
         this.height = AppWindow.DEFAULT_HEIGHT;
-        windowListener = new WindowListener(this);
-        drawWindow();
+        listener = new ViewListener(this);
     }
 
-    public Window(int width, int height) {
+    public GUIView(int width, int height) {
         super(AppWindow.APP_NAME);
         this.width = width;
         this.height = height;
-        windowListener = new WindowListener(this);
-        drawWindow();
+        listener = new ViewListener(this);
+    }
+
+    public ViewListener getListener() {
+        return listener;
     }
 
     /**
      * Рисует окно программы
      */
-    private void drawWindow() {
+    public void start() {
         setMainFrame();
         setMainMenu();
         initPanels();
         fillPanelTop();
         fillPanelMiddle();
         fillPanelBottom();
-
 
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.BOTH;
@@ -60,6 +58,8 @@ public class Window extends JFrame {
         add(jPanelMiddle, gridBagConstraints);
         gridBagConstraints.gridy = 2;
         add(jPanelBottom, gridBagConstraints);
+
+        setVisible(true);
     }
 
     /**
@@ -100,12 +100,12 @@ public class Window extends JFrame {
         jMenuBar.add(menuHelp);
         setJMenuBar(jMenuBar);
 
-        itemEncrypt.addActionListener(windowListener);
-        itemDecrypt.addActionListener(windowListener);
-        itemBrutForce.addActionListener(windowListener);
-        itemAnalysis.addActionListener(windowListener);
-        itemAbout.addActionListener(windowListener);
-        itemExit.addActionListener(windowListener);
+        itemEncrypt.addActionListener(listener);
+        itemDecrypt.addActionListener(listener);
+        itemBrutForce.addActionListener(listener);
+        itemAnalysis.addActionListener(listener);
+        itemAbout.addActionListener(listener);
+        itemExit.addActionListener(listener);
     }
 
     /**
@@ -175,8 +175,8 @@ public class Window extends JFrame {
         gridBagConstraints.gridx = 1;
         jPanelTop.add(offsetLabel, gridBagConstraints);
 
-        fileButton.addActionListener(windowListener);
-        fileAnalysisButton.addActionListener(windowListener);
+        fileButton.addActionListener(listener);
+        fileAnalysisButton.addActionListener(listener);
     }
 
     /**
@@ -211,10 +211,10 @@ public class Window extends JFrame {
         gridBagConstraints.gridx = 1;
         jPanelMiddle.add(analysisButton, gridBagConstraints);
 
-        encryptButton.addActionListener(windowListener);
-        decryptButton.addActionListener(windowListener);
-        brutForceButton.addActionListener(windowListener);
-        analysisButton.addActionListener(windowListener);
+        encryptButton.addActionListener(listener);
+        decryptButton.addActionListener(listener);
+        brutForceButton.addActionListener(listener);
+        analysisButton.addActionListener(listener);
     }
 
     /**
@@ -258,8 +258,30 @@ public class Window extends JFrame {
         gridBagConstraints.gridx = 1;
         jPanelBottom.add(dirOpenButton, gridBagConstraints);
 
-        fileOpenButton.addActionListener(windowListener);
-        dirOpenButton.addActionListener(windowListener);
+        fileOpenButton.addActionListener(listener);
+        dirOpenButton.addActionListener(listener);
+    }
+
+    /**
+     * @return - возвращает сдвиг для шифрования, введенный пользователем
+     */
+    public String getKey() {
+        return offsetTextField.getText();
+    }
+
+    public String getCryptFileName() {
+        return filePathLabel.getText();
+    }
+
+    public String getDictionaryFileName() {
+        return dictionaryPathLabel.getText();
+    }
+
+    /**
+     * @return - возвращает путь к целевому файлу после шифрования/расшифровки
+     */
+    public String getResultFileName() {
+        return resultFileLabel.getText();
     }
 
     /**
@@ -279,63 +301,29 @@ public class Window extends JFrame {
     }
 
     /**
-     * @param fileType - тип файла (исходный файл/файл для аналитики)
-     * @return - возвращает путь к выбранному файлу
+     * Записывает пусть к выбранному файлу для аналитики
+     * @param path - путь к файлу
      */
-    public Path getFilePath(String fileType) {
-        String file = null;
-        if (fileType.equals(AppWindow.TYPE_FILE)) file = filePathLabel.getText();
-        else if (fileType.equals(AppWindow.TYPE_DICTIONARY)) file = dictionaryPathLabel.getText();
-
-        if (file == null) throw new UserException(Exception.FILE_NOT_SELECTED);
-
-        Path filePath = Path.of(file);
-
-        if (!Files.isRegularFile(filePath)) throw new UserException(Exception.WRONG_FILE_PATH);
-
-        return filePath;
+    public void setResultFilePath(String path) {
+        resultFileLabel.setText(path);
     }
 
-    /**
-     * @return - возвращает сдвиг для шифрования, введенный пользователем
-     */
-    public int getKey() {
-        int key;
-        try {
-            key = Integer.parseInt(offsetTextField.getText());
-            if (key < 0) throw new UserException(Exception.WRONG_KEY);
-        } catch (NumberFormatException e) {
-            throw new UserException(Exception.WRONG_KEY);
-        }
-
-        return key;
-    }
-
-    /**
-     * @return - возвращает путь к целевому файлу после шифрования/расшифровки
-     */
-    public Path getResultFile() {
-        return Path.of(resultFileLabel.getText());
-    }
-
-    /**
-     * Активирует кнопки открытия итогового файла/директории и записывает путь к нему в поле
-     * @param file - путь к файлу
-     */
     public void showResult(Path file, int key, String message) {
-        if (file != null && Files.isRegularFile(file) && Files.isDirectory(file.toAbsolutePath().getParent())) {
-            messageLabel.setText(message + (key != 0 ? Math.abs(key) : ""));
-            resultFileLabel.setText(file.toAbsolutePath().toString());
-            fileOpenButton.setEnabled(true);
-            dirOpenButton.setEnabled(true);
-            //fileOpenButton.setVisible(true);
-            //dirOpenButton.setVisible(true);
-        }
     }
 
-    /**
-     * Деактивирует кнопки открытия итогового файла/директории и очищает поле с путем к нему
-     */
+    @Override
+    public void printResult() {
+//        if (file != null && Files.isRegularFile(file) && Files.isDirectory(file.toAbsolutePath().getParent())) {
+//            messageLabel.setText(message + (key != 0 ? Math.abs(key) : ""));
+//            resultFileLabel.setText(file.toAbsolutePath().toString());
+//            fileOpenButton.setEnabled(true);
+//            dirOpenButton.setEnabled(true);
+//            //fileOpenButton.setVisible(true);
+//            //dirOpenButton.setVisible(true);
+//        }
+    }
+
+    @Override
     public void clearResult() {
         messageLabel.setText(" ");
         resultFileLabel.setText(" ");

@@ -1,21 +1,19 @@
 package com.javarush.cryptanalyzer.cooper.view;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
-import java.nio.file.Path;
+import javax.swing.*;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.filechooser.FileFilter;
-import com.javarush.cryptanalyzer.cooper.app.Caesar;
+import com.javarush.cryptanalyzer.cooper.app.Application;
+import com.javarush.cryptanalyzer.cooper.constants.Crypt;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
-import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
 
-public class WindowListener implements ActionListener {
-    Window frame;
+public class ViewListener implements ActionListener {
+    GUIView frame;
 
-    public WindowListener(Window frame) {
+    public ViewListener(GUIView frame) {
         this.frame = frame;
     }
 
@@ -29,46 +27,69 @@ public class WindowListener implements ActionListener {
                 selectFile(AppWindow.TYPE_DICTIONARY);
                 break;
             case AppWindow.ENCRYPT:
+                frame.clearResult();
                 try {
-                    encryptText();
+                    Application.crypt(new String[]{
+                        Crypt.ENCRYPT,
+                        frame.getKey(),
+                        frame.getCryptFileName()
+                    });
+                    //encryptText();
                 } catch (Exception ex) {
                     showError(ex.getMessage());
                 }
                 break;
             case AppWindow.DECRYPT:
+                frame.clearResult();
                 try {
-                    decryptText();
+                    Application.crypt(new String[]{
+                            Crypt.DECRYPT,
+                            frame.getKey(),
+                            frame.getCryptFileName()
+                    });
+                    //decryptText();
                 } catch (Exception ex) {
                     showError(ex.getMessage());
                 }
                 break;
             case AppWindow.BRUTE_FORCE:
                 try {
-                    makePain();
+                    Application.crypt(new String[]{
+                        Crypt.BRUTE_FORCE,
+                        frame.getKey(),
+                        frame.getCryptFileName()
+                    });
+                    //makePain();
                 } catch (Exception ex) {
                     showError(ex.getMessage());
                 }
                 break;
             case AppWindow.ANALYSIS:
                 try {
-                    tryToDoSomethingStupid();
+                    Application.crypt(new String[]{
+                        Crypt.ANALYSIS,
+                        frame.getKey(),
+                        frame.getCryptFileName(),
+                        frame.getDictionaryFileName()
+                    });
+                    //tryToDoSomethingStupid();
                 } catch (IOException ex) {
                     showError(ex.getMessage());
                 }
                 break;
             case AppWindow.OPEN_FILE:
-                try {
-                    Desktop.getDesktop().open(frame.getResultFile().toFile());
-                } catch (IOException ex) {
-                    showError(ex.getMessage());
-                }
+//                try {
+//                    Desktop.getDesktop().open(frame.getResultFile().toFile());
+//                } catch (IOException ex) {
+//                    showError(ex.getMessage());
+//                }
                 break;
             case AppWindow.OPEN_DIR:
-                try {
-                    Desktop.getDesktop().open(frame.getResultFile().toAbsolutePath().getParent().toFile());
-                } catch (IOException ex) {
-                    showError(ex.getMessage());
-                }
+//                try {
+//                    Desktop.getDesktop().open(frame.getResultFile().toAbsolutePath().getParent().toFile());
+//                } catch (IOException ex) {
+//                    showError(ex.getMessage());
+//                }
                 break;
             case "About":
                 showError("Unknown shit-developer )");
@@ -84,7 +105,7 @@ public class WindowListener implements ActionListener {
      * @param fileType - тип файла (исходный файл/файл для аналитики)
      */
     private void selectFile(String fileType) {
-        frame.clearResult();
+        //frame.clearResult();
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Выбор файла");
@@ -109,58 +130,6 @@ public class WindowListener implements ActionListener {
             else if (fileType.equals(AppWindow.TYPE_DICTIONARY))
                 frame.setAnalysisFilePath(fileChooser.getSelectedFile().getPath());
         }
-    }
-
-    /**
-     * Шифрование текста
-     * @throws IOException
-     */
-    private void encryptText() throws IOException {
-        frame.clearResult();
-
-        Path file = frame.getFilePath(AppWindow.TYPE_FILE);
-        Path encodedFile = Path.of(DefaultFiles.ENCODED_FILE);
-        Caesar caesar = new Caesar(frame.getKey());
-        caesar.cryptTextToFile(file, encodedFile);
-        frame.showResult(encodedFile, caesar.getOffset(), AppWindow.APP_RESULT_ENCRYPT);
-    }
-
-    /**
-     * Расшифровка текста
-     * @throws IOException
-     */
-    private void decryptText() throws IOException {
-        frame.clearResult();
-
-        Path file = frame.getFilePath(AppWindow.TYPE_FILE);
-        Path decodedFile = Path.of(DefaultFiles.DECODED_FILE);
-        Caesar caesar = new Caesar(frame.getKey() * -1);
-        caesar.cryptTextToFile(file, decodedFile);
-        frame.showResult(decodedFile, caesar.getOffset(), AppWindow.APP_RESULT_DECRYPT);
-    }
-
-    /**
-     * Попытка расшифровки перебором сдвига
-     * @throws IOException
-     */
-    private void makePain() throws IOException {
-        frame.clearResult();
-
-        Path file = frame.getFilePath(AppWindow.TYPE_FILE);
-        Path decodedFile = Path.of(DefaultFiles.DECODED_FILE);
-        Caesar caesar = new Caesar();
-        caesar.bruteForceCryptTextToFile(file, decodedFile);
-        frame.showResult(decodedFile, caesar.getOffset(), AppWindow.APP_RESULT_DECRYPT);
-    }
-
-    private void tryToDoSomethingStupid() throws IOException {
-        frame.clearResult();
-
-        Path file = frame.getFilePath(AppWindow.TYPE_FILE);
-        Path dictionary = frame.getFilePath(AppWindow.TYPE_DICTIONARY);
-        Path decodedFile = Path.of(DefaultFiles.DECODED_FILE);
-        Caesar.analyseText(file, dictionary, decodedFile);
-        frame.showResult(decodedFile, 0, AppWindow.APP_RESULT_ANALYSE);
     }
 
     /**
