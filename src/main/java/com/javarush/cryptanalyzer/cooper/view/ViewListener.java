@@ -21,12 +21,10 @@ public class ViewListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case AppWindow.FILE_ENCRYPT_DECRYPT:
-                String file = selectFile();
-                frame.setFilePath(file);
+                frame.setFilePath(selectFile());
                 break;
             case AppWindow.FILE_DICTIONARY:
-                String fileDict = selectFile();
-                frame.setAnalysisFilePath(fileDict);
+                frame.setAnalysisFilePath(selectFile());
                 break;
             case AppWindow.ENCRYPT:
                 frame.clearResult();
@@ -36,7 +34,6 @@ public class ViewListener implements ActionListener {
                         frame.getKey(),
                         frame.getCryptFileName()
                     });
-                    //encryptText();
                 } catch (Exception ex) {
                     showError(ex.getMessage());
                 }
@@ -49,7 +46,6 @@ public class ViewListener implements ActionListener {
                             frame.getKey(),
                             frame.getCryptFileName()
                     });
-                    //decryptText();
                 } catch (Exception ex) {
                     showError(ex.getMessage());
                 }
