@@ -5,6 +5,8 @@ public class AppWindow {
     public static final int DEFAULT_HEIGHT = 470;
 
     public static final String APP_NAME = "Crypto";
+    public static final String DEVELOPER = "Developer";
+    public static final String DEVELOPER_NAME = "Andrew Cooper";
     public static final String APP_MESSAGE =
             "<html>" +
                 "<div style=\"padding: 2px; border: 1px solid black;\">" +
@@ -35,6 +37,6 @@ public class AppWindow {
     public static final String OPEN_FILE = "Open file";
     public static final String OPEN_DIR = "Open dir";
 
-    public static final String TYPE_FILE = "file";
-    public static final String TYPE_DICTIONARY = "dictionary";
+    public static final String SELECT_FILE = "Select file";
+    public static final String TEXT_FILES = "Text files (*.txt)";
 }
