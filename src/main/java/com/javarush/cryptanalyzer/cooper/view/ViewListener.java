@@ -71,9 +71,9 @@ public class ViewListener implements ActionListener {
     private void encode() {
         try {
             String encodedText = Application.crypt(new String[]{
-                    Crypt.ENCRYPT,
-                    frame.getKey(),
-                    frame.getCryptFileName()
+                Crypt.ENCRYPT,
+                frame.getKey(),
+                frame.getCryptFileName()
             });
             Path file = frame.saveTextToFile(encodedText, DefaultFiles.ENCODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
@@ -85,9 +85,9 @@ public class ViewListener implements ActionListener {
     private void decode() {
         try {
             String decodedText = Application.crypt(new String[]{
-                    Crypt.DECRYPT,
-                    frame.getKey(),
-                    frame.getCryptFileName()
+                Crypt.DECRYPT,
+                frame.getKey(),
+                frame.getCryptFileName()
             });
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
@@ -99,9 +99,9 @@ public class ViewListener implements ActionListener {
     private void bruteForce() {
         try {
             String decodedText = Application.crypt(new String[]{
-                    Crypt.BRUTE_FORCE,
-                    frame.getKey(),
-                    frame.getCryptFileName()
+                Crypt.BRUTE_FORCE,
+                frame.getKey(),
+                frame.getCryptFileName()
             });
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
@@ -113,10 +113,10 @@ public class ViewListener implements ActionListener {
     private void analyse() {
         try {
             String decodedText = Application.crypt(new String[]{
-                    Crypt.ANALYSIS,
-                    frame.getKey(),
-                    frame.getCryptFileName(),
-                    frame.getDictionaryFileName()
+                Crypt.ANALYSIS,
+                frame.getKey(),
+                frame.getCryptFileName(),
+                frame.getDictionaryFileName()
             });
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
