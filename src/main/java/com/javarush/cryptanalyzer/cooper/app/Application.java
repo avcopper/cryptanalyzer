@@ -1,6 +1,8 @@
 package com.javarush.cryptanalyzer.cooper.app;
 
 import java.io.IOException;
+
+import com.javarush.cryptanalyzer.cooper.entity.Result;
 import com.javarush.cryptanalyzer.cooper.utils.FunctionCode;
 import com.javarush.cryptanalyzer.cooper.controller.Controller;
 import com.javarush.cryptanalyzer.cooper.services.CryptFunction;
@@ -16,9 +18,9 @@ public class Application {
         controller.getView().start();
     }
 
-    public static void crypt(String[] params) throws IOException {
+    public static String crypt(String[] params) throws IOException {
         CryptFunction cryptFunction = getCryptFunction(params[0]);
-        cryptFunction.execute(params);
+        return cryptFunction.execute(params);
     }
 
     private static CryptFunction getCryptFunction(String mode) {
@@ -31,7 +33,7 @@ public class Application {
         };
     }
 
-    public void prinResult() {
-        controller.getView().printResult();
+    public void showResult(Result result) {
+        controller.getView().showResult(result);
     }
 }
