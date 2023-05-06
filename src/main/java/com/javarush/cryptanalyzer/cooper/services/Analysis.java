@@ -4,9 +4,7 @@ import java.util.List;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import com.javarush.cryptanalyzer.cooper.utils.Caesar;
-import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
 
 public class Analysis implements CryptFunction {
     @Override
@@ -18,8 +16,6 @@ public class Analysis implements CryptFunction {
         Path dictionary = Path.of(params[3]);
         String dictionaryLines = Files.readString(dictionary);
         List<Character> dictionaryKeyList = Caesar.getAnalysedSymbolList(dictionaryLines);
-
-        Path decodedFile = Path.of(DefaultFiles.DECODED_FILE);
 
         StringBuilder decodedLines = new StringBuilder(encodedLines);
         char oldChar, newChar;
@@ -34,8 +30,6 @@ public class Analysis implements CryptFunction {
             decodedLines.replace(i, i + 1, String.valueOf(newChar));
         }
 
-        Path result = Files.writeString(decodedFile, decodedLines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-        return "";
+        return decodedLines.toString();
     }
 }

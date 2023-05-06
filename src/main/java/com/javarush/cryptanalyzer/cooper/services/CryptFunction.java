@@ -1,7 +1,9 @@
 package com.javarush.cryptanalyzer.cooper.services;
 
+import com.javarush.cryptanalyzer.cooper.exception.UserException;
+
 import java.io.IOException;
 
 public interface CryptFunction {
-    public String execute(String[] params) throws IOException;
+    String execute(String[] params) throws IOException, UserException;
 }
