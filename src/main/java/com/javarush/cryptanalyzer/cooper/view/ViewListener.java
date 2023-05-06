@@ -1,14 +1,19 @@
 package com.javarush.cryptanalyzer.cooper.view;
 
-import java.io.File;
+import java.awt.*;
 import javax.swing.*;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.filechooser.FileFilter;
+import java.nio.file.Path;
+
 import com.javarush.cryptanalyzer.cooper.app.Application;
+import com.javarush.cryptanalyzer.cooper.constants.AppResult;
 import com.javarush.cryptanalyzer.cooper.constants.Crypt;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
+import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
+import com.javarush.cryptanalyzer.cooper.entity.Result;
+import com.javarush.cryptanalyzer.cooper.utils.ResultCode;
 
 public class ViewListener implements ActionListener {
     GUIView frame;
@@ -21,76 +26,41 @@ public class ViewListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case AppWindow.FILE_ENCRYPT_DECRYPT:
-                frame.setFilePath(selectFile());
+                frame.clearResult();
+                frame.setCryptFileName(frame.selectFile());
                 break;
             case AppWindow.FILE_DICTIONARY:
-                frame.setAnalysisFilePath(selectFile());
+                frame.clearResult();
+                frame.setDictionaryFileName(frame.selectFile());
                 break;
             case AppWindow.ENCRYPT:
-                frame.clearResult();
-                try {
-                    Application.crypt(new String[]{
-                        Crypt.ENCRYPT,
-                        frame.getKey(),
-                        frame.getCryptFileName()
-                    });
-                } catch (Exception ex) {
-                    showError(ex.getMessage());
-                }
+                encode();
                 break;
             case AppWindow.DECRYPT:
-                frame.clearResult();
-                try {
-                    Application.crypt(new String[]{
-                            Crypt.DECRYPT,
-                            frame.getKey(),
-                            frame.getCryptFileName()
-                    });
-                } catch (Exception ex) {
-                    showError(ex.getMessage());
-                }
+                decode();
                 break;
             case AppWindow.BRUTE_FORCE:
-                try {
-                    Application.crypt(new String[]{
-                        Crypt.BRUTE_FORCE,
-                        frame.getKey(),
-                        frame.getCryptFileName()
-                    });
-                    //makePain();
-                } catch (Exception ex) {
-                    showError(ex.getMessage());
-                }
+                bruteForce();
                 break;
             case AppWindow.ANALYSIS:
-                try {
-                    Application.crypt(new String[]{
-                        Crypt.ANALYSIS,
-                        frame.getKey(),
-                        frame.getCryptFileName(),
-                        frame.getDictionaryFileName()
-                    });
-                    //tryToDoSomethingStupid();
-                } catch (IOException ex) {
-                    showError(ex.getMessage());
-                }
+                analyse();
                 break;
             case AppWindow.OPEN_FILE:
-//                try {
-//                    Desktop.getDesktop().open(frame.getResultFile().toFile());
-//                } catch (IOException ex) {
-//                    showError(ex.getMessage());
-//                }
+                try {
+                    Desktop.getDesktop().open(Path.of(frame.getResultFileName()).toFile());
+                } catch (IOException ex) {
+                    frame.showResult(new Result(ResultCode.ERROR, ex));
+                }
                 break;
             case AppWindow.OPEN_DIR:
-//                try {
-//                    Desktop.getDesktop().open(frame.getResultFile().toAbsolutePath().getParent().toFile());
-//                } catch (IOException ex) {
-//                    showError(ex.getMessage());
-//                }
+                try {
+                    Desktop.getDesktop().open(Path.of(frame.getResultFileName()).toAbsolutePath().getParent().toFile());
+                } catch (IOException ex) {
+                    frame.showResult(new Result(ResultCode.ERROR, ex));
+                }
                 break;
             case "About":
-                showError("Unknown shit-developer )");
+                JOptionPane.showMessageDialog(frame, AppWindow.DEVELOPER_NAME, AppWindow.DEVELOPER, JOptionPane.INFORMATION_MESSAGE);
                 break;
             case "Exit":
                 System.exit(0);
@@ -98,41 +68,60 @@ public class ViewListener implements ActionListener {
         }
     }
 
-    /**
-     * @return - возвращает путь к выбранному файлу на диске
-     */
-    private String selectFile() {
-        //frame.clearResult();
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Выбор файла");
-        fileChooser.setCurrentDirectory(new File("./"));
-        fileChooser.setAcceptAllFileFilterUsed(false);
-        fileChooser.addChoosableFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.isDirectory() || file.getName().endsWith("txt");
-            }
-            @Override
-            public String getDescription() {
-                return "Текстовые файлы (*.txt)";
-            }
-        });
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-        int result = fileChooser.showOpenDialog(frame);
-        if (result == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().isFile()) {
-            return fileChooser.getSelectedFile().getPath();
+    private void encode() {
+        try {
+            String encodedText = Application.crypt(new String[]{
+                    Crypt.ENCRYPT,
+                    frame.getKey(),
+                    frame.getCryptFileName()
+            });
+            Path file = frame.saveTextToFile(encodedText, DefaultFiles.ENCODED_FILE);
+            frame.showResult(new Result(ResultCode.OK, file));
+        } catch (Exception ex) {
+            frame.showResult(new Result(ResultCode.ERROR, ex));
         }
-
-        return null;
     }
 
-    /**
-     * Показ ошибки
-     * @param message - сообщение для показа
-     */
-    private void showError(String message) {
-        JOptionPane.showMessageDialog(frame, message, "Error", JOptionPane.ERROR_MESSAGE);
+    private void decode() {
+        try {
+            String decodedText = Application.crypt(new String[]{
+                    Crypt.DECRYPT,
+                    frame.getKey(),
+                    frame.getCryptFileName()
+            });
+            Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
+            frame.showResult(new Result(ResultCode.OK, file));
+        } catch (Exception ex) {
+            frame.showResult(new Result(ResultCode.ERROR, ex));
+        }
+    }
+
+    private void bruteForce() {
+        try {
+            String decodedText = Application.crypt(new String[]{
+                    Crypt.BRUTE_FORCE,
+                    frame.getKey(),
+                    frame.getCryptFileName()
+            });
+            Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
+            frame.showResult(new Result(ResultCode.OK, file));
+        } catch (Exception ex) {
+            frame.showResult(new Result(ResultCode.ERROR, ex));
+        }
+    }
+
+    private void analyse() {
+        try {
+            String decodedText = Application.crypt(new String[]{
+                    Crypt.ANALYSIS,
+                    frame.getKey(),
+                    frame.getCryptFileName(),
+                    frame.getDictionaryFileName()
+            });
+            Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
+            frame.showResult(new Result(ResultCode.OK, file));
+        } catch (IOException ex) {
+            frame.showResult(new Result(ResultCode.ERROR, ex));
+        }
     }
 }

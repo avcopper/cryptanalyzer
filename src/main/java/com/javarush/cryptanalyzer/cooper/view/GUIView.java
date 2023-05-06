@@ -2,10 +2,20 @@ package com.javarush.cryptanalyzer.cooper.view;
 
 import java.awt.*;
 import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+
+import com.javarush.cryptanalyzer.cooper.constants.AppResult;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
 import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
+import com.javarush.cryptanalyzer.cooper.entity.Result;
+
+import static com.javarush.cryptanalyzer.cooper.utils.ResultCode.OK;
 
 public class GUIView extends JFrame implements View {
     private final int width;
@@ -288,7 +298,7 @@ public class GUIView extends JFrame implements View {
      * Записывает путь к выбранному файлу
      * @param path - путь к файлу
      */
-    public void setFilePath(String path) {
+    public void setCryptFileName(String path) {
         filePathLabel.setText(path);
     }
 
@@ -296,7 +306,7 @@ public class GUIView extends JFrame implements View {
      * Записывает пусть к выбранному файлу для аналитики
      * @param path - путь к файлу
      */
-    public void setAnalysisFilePath(String path) {
+    public void setDictionaryFileName(String path) {
         dictionaryPathLabel.setText(path);
     }
 
@@ -304,23 +314,46 @@ public class GUIView extends JFrame implements View {
      * Записывает пусть к выбранному файлу для аналитики
      * @param path - путь к файлу
      */
-    public void setResultFilePath(String path) {
+    public void setResultFileName(String path) {
         resultFileLabel.setText(path);
     }
 
-    public void showResult(Path file, int key, String message) {
+    public String selectFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle(AppWindow.SELECT_FILE);
+        fileChooser.setCurrentDirectory(new File("./"));
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith("txt");
+            }
+            @Override
+            public String getDescription() {
+                return AppWindow.TEXT_FILES;
+            }
+        });
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().isFile()) {
+            return fileChooser.getSelectedFile().getPath();
+        }
+
+        return null;
+    }
+
+    public Path saveTextToFile(String text, String path) throws IOException {
+        Path filePath = Path.of(path);
+        return Files.writeString(filePath, text, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     @Override
-    public void printResult() {
-//        if (file != null && Files.isRegularFile(file) && Files.isDirectory(file.toAbsolutePath().getParent())) {
-//            messageLabel.setText(message + (key != 0 ? Math.abs(key) : ""));
-//            resultFileLabel.setText(file.toAbsolutePath().toString());
-//            fileOpenButton.setEnabled(true);
-//            dirOpenButton.setEnabled(true);
-//            //fileOpenButton.setVisible(true);
-//            //dirOpenButton.setVisible(true);
-//        }
+    public void showResult(Result result) {
+        switch (result.getResultCode()) {
+            case OK -> showResult(result.getFilePath().toAbsolutePath().toString());
+            case ERROR -> showError(result.getUserException().getMessage());
+        }
     }
 
     @Override
@@ -329,7 +362,16 @@ public class GUIView extends JFrame implements View {
         resultFileLabel.setText(" ");
         fileOpenButton.setEnabled(false);
         dirOpenButton.setEnabled(false);
-        //fileOpenButton.setVisible(false);
-        //dirOpenButton.setVisible(false);
+    }
+
+    private void showResult(String file) {
+        messageLabel.setText(AppResult.OPERATION_COMPLETED);
+        resultFileLabel.setText(file);
+        fileOpenButton.setEnabled(true);
+        dirOpenButton.setEnabled(true);
+    }
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, AppResult.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }
