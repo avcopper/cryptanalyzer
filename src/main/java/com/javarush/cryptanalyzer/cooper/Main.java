@@ -16,7 +16,7 @@ public class Main {
         try {
             application.run();
         } catch (Exception ex) {
-            view.showResult(new Result(ResultCode.ERROR, ex));
+            application.showResult(new Result(ResultCode.ERROR, ex));
         }
     }
 }

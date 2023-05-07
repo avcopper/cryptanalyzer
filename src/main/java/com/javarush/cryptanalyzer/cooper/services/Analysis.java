@@ -1,14 +1,13 @@
 package com.javarush.cryptanalyzer.cooper.services;
 
-import java.nio.file.InvalidPathException;
 import java.util.List;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.nio.file.Files;
-
+import java.nio.file.InvalidPathException;
+import com.javarush.cryptanalyzer.cooper.utils.Caesar;
 import com.javarush.cryptanalyzer.cooper.constants.Exception;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
-import com.javarush.cryptanalyzer.cooper.utils.Caesar;
 
 public class Analysis implements CryptFunction {
     @Override

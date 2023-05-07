@@ -9,6 +9,9 @@ public class Controller {
         this.view = view;
     }
 
+    /**
+     * @return - возвращает объект интерфейса
+     */
     public View getView() {
         return view;
     }

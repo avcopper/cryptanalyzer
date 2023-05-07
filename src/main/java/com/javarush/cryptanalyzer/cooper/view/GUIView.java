@@ -6,16 +6,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import javax.swing.border.EmptyBorder;
+import java.nio.file.StandardOpenOption;
 import javax.swing.filechooser.FileFilter;
-
 import com.javarush.cryptanalyzer.cooper.constants.AppResult;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
 import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
 import com.javarush.cryptanalyzer.cooper.entity.Result;
-
-import static com.javarush.cryptanalyzer.cooper.utils.ResultCode.OK;
 
 public class GUIView extends JFrame implements View {
     private final int width;
@@ -279,10 +276,16 @@ public class GUIView extends JFrame implements View {
         return offsetTextField.getText();
     }
 
+    /**
+     * @return - возвращает файл для шифрования/расшифровки
+     */
     public String getCryptFileName() {
         return filePathLabel.getText();
     }
 
+    /**
+     * @return - возвращает файл словаря
+     */
     public String getDictionaryFileName() {
         return dictionaryPathLabel.getText();
     }
@@ -311,13 +314,16 @@ public class GUIView extends JFrame implements View {
     }
 
     /**
-     * Записывает пусть к выбранному файлу для аналитики
+     * Записывает пусть к целевому файлу после шифрования/расшифровки
      * @param path - путь к файлу
      */
     public void setResultFileName(String path) {
         resultFileLabel.setText(path);
     }
 
+    /**
+     * @return - возвращает пусть к выбранному пользователем файлу на диске
+     */
     public String selectFile() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle(AppWindow.SELECT_FILE);
@@ -343,6 +349,12 @@ public class GUIView extends JFrame implements View {
         return null;
     }
 
+    /**
+     * @param text - текст
+     * @param path - путь к файлу
+     * @return - возвращает путь к файлу на диске с сохраненным текстом
+     * @throws IOException
+     */
     public Path saveTextToFile(String text, String path) throws IOException {
         Path filePath = Path.of(path);
         return Files.writeString(filePath, text, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -371,6 +383,10 @@ public class GUIView extends JFrame implements View {
         dirOpenButton.setEnabled(true);
     }
 
+    /**
+     * Показ ошибки в работе программы
+     * @param message - текст ошибки
+     */
     private void showError(String message) {
         JOptionPane.showMessageDialog(this, message, AppResult.ERROR, JOptionPane.ERROR_MESSAGE);
     }

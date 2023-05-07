@@ -71,17 +71,6 @@ public class Caesar {
         return CryptoAlphabet.CAESAR_ALPHABET.charAt(cryptIndex);
     }
 
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset =
-            Math.abs(offset) < CryptoAlphabet.CAESAR_ALPHABET_LENGTH ?
-                offset :
-                offset % CryptoAlphabet.CAESAR_ALPHABET_LENGTH;
-    }
-
     /**
      * @param text - анализируемый текст
      * @return - возвращает список символов отсортированный по убыванию частоты использования в тексте
@@ -102,5 +91,16 @@ public class Caesar {
 
         sortedCharsMap.putAll(countCharsMap);
         return new ArrayList<>(sortedCharsMap.keySet());
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset =
+                Math.abs(offset) < CryptoAlphabet.CAESAR_ALPHABET_LENGTH ?
+                        offset :
+                        offset % CryptoAlphabet.CAESAR_ALPHABET_LENGTH;
     }
 }

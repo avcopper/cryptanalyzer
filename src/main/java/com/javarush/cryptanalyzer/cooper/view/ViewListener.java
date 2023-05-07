@@ -2,18 +2,17 @@ package com.javarush.cryptanalyzer.cooper.view;
 
 import java.awt.*;
 import javax.swing.*;
+import java.nio.file.Path;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.file.Path;
-
+import com.javarush.cryptanalyzer.cooper.entity.Result;
 import com.javarush.cryptanalyzer.cooper.app.Application;
-import com.javarush.cryptanalyzer.cooper.constants.AppResult;
 import com.javarush.cryptanalyzer.cooper.constants.Crypt;
+import com.javarush.cryptanalyzer.cooper.exception.UserException;
+import com.javarush.cryptanalyzer.cooper.utils.ResultCode;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
 import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
-import com.javarush.cryptanalyzer.cooper.entity.Result;
-import com.javarush.cryptanalyzer.cooper.utils.ResultCode;
 
 public class ViewListener implements ActionListener {
     GUIView frame;
@@ -49,14 +48,14 @@ public class ViewListener implements ActionListener {
                 try {
                     Desktop.getDesktop().open(Path.of(frame.getResultFileName()).toFile());
                 } catch (IOException ex) {
-                    frame.showResult(new Result(ResultCode.ERROR, ex));
+                    throw new UserException(ex.getMessage());
                 }
                 break;
             case AppWindow.OPEN_DIR:
                 try {
                     Desktop.getDesktop().open(Path.of(frame.getResultFileName()).toAbsolutePath().getParent().toFile());
                 } catch (IOException ex) {
-                    frame.showResult(new Result(ResultCode.ERROR, ex));
+                    throw new UserException(ex.getMessage());
                 }
                 break;
             case "About":
@@ -68,6 +67,9 @@ public class ViewListener implements ActionListener {
         }
     }
 
+    /**
+     * Шифрование
+     */
     private void encode() {
         try {
             String encodedText = Application.crypt(new String[]{
@@ -78,10 +80,13 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(encodedText, DefaultFiles.ENCODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
-            frame.showResult(new Result(ResultCode.ERROR, ex));
+            throw new UserException(ex.getMessage());
         }
     }
 
+    /**
+     * Расшифровка
+     */
     private void decode() {
         try {
             String decodedText = Application.crypt(new String[]{
@@ -92,10 +97,13 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
-            frame.showResult(new Result(ResultCode.ERROR, ex));
+            throw new UserException(ex.getMessage());
         }
     }
 
+    /**
+     * Расшифровка перебором
+     */
     private void bruteForce() {
         try {
             String decodedText = Application.crypt(new String[]{
@@ -106,10 +114,13 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
-            frame.showResult(new Result(ResultCode.ERROR, ex));
+            throw new UserException(ex.getMessage());
         }
     }
 
+    /**
+     * Расшифровка анализом
+     */
     private void analyse() {
         try {
             String decodedText = Application.crypt(new String[]{
@@ -121,7 +132,7 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (IOException ex) {
-            frame.showResult(new Result(ResultCode.ERROR, ex));
+            throw new UserException(ex.getMessage());
         }
     }
 }

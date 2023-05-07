@@ -1,15 +1,14 @@
 package com.javarush.cryptanalyzer.cooper.services;
 
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.nio.file.InvalidPathException;
+import com.javarush.cryptanalyzer.cooper.utils.Caesar;
 import com.javarush.cryptanalyzer.cooper.constants.Exception;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
-import com.javarush.cryptanalyzer.cooper.utils.Caesar;
 import com.javarush.cryptanalyzer.cooper.constants.CryptoAlphabet;
 
 public class BruteForce implements CryptFunction {
