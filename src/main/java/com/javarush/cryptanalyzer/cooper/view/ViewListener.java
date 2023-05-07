@@ -48,14 +48,14 @@ public class ViewListener implements ActionListener {
                 try {
                     Desktop.getDesktop().open(Path.of(frame.getResultFileName()).toFile());
                 } catch (IOException ex) {
-                    throw new UserException(ex.getMessage());
+                    frame.showResult(new Result(ResultCode.ERROR, ex));
                 }
                 break;
             case AppWindow.OPEN_DIR:
                 try {
                     Desktop.getDesktop().open(Path.of(frame.getResultFileName()).toAbsolutePath().getParent().toFile());
                 } catch (IOException ex) {
-                    throw new UserException(ex.getMessage());
+                    frame.showResult(new Result(ResultCode.ERROR, ex));
                 }
                 break;
             case "About":
@@ -80,7 +80,7 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(encodedText, DefaultFiles.ENCODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
-            throw new UserException(ex.getMessage());
+            frame.showResult(new Result(ResultCode.ERROR, ex));
         }
     }
 
@@ -97,7 +97,7 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
-            throw new UserException(ex.getMessage());
+            frame.showResult(new Result(ResultCode.ERROR, ex));
         }
     }
 
@@ -114,7 +114,7 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
-            throw new UserException(ex.getMessage());
+            frame.showResult(new Result(ResultCode.ERROR, ex));
         }
     }
 
@@ -132,7 +132,7 @@ public class ViewListener implements ActionListener {
             Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (IOException ex) {
-            throw new UserException(ex.getMessage());
+            frame.showResult(new Result(ResultCode.ERROR, ex));
         }
     }
 }
