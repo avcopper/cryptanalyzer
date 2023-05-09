@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.nio.file.InvalidPathException;
 import com.javarush.cryptanalyzer.cooper.utils.Caesar;
-import com.javarush.cryptanalyzer.cooper.constants.Exception;
+import com.javarush.cryptanalyzer.cooper.constants.ExceptionConstant;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
 import com.javarush.cryptanalyzer.cooper.constants.CryptoAlphabet;
 
@@ -15,7 +15,7 @@ public class BruteForce implements CryptFunction {
     @Override
     public String execute(String[] params) throws IOException, UserException {
         try {
-            if ("".equals(params[2])) throw new UserException(Exception.FILE_NOT_SELECTED);
+            if ("".equals(params[2])) throw new UserException(ExceptionConstant.FILE_NOT_SELECTED);
 
             Path file = Path.of(params[2]);
             String lines = Files.readString(file);
@@ -32,11 +32,11 @@ public class BruteForce implements CryptFunction {
                 if (aMatcher.find()) return cryptString;
             }
         } catch (InvalidPathException ex) {
-            throw new UserException(Exception.WRONG_FILE_PATH);
+            throw new UserException(ExceptionConstant.WRONG_FILE_PATH);
         } catch (NumberFormatException ex) {
-            throw new UserException(Exception.WRONG_KEY);
+            throw new UserException(ExceptionConstant.WRONG_KEY);
         }
 
-        throw new UserException(Exception.CODE_NOT_FOUND);
+        throw new UserException(ExceptionConstant.CODE_NOT_FOUND);
     }
 }
