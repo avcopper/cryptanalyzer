@@ -2,23 +2,46 @@ package com.javarush.cryptanalyzer.cooper.view;
 
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import com.javarush.cryptanalyzer.cooper.constants.*;
 import com.javarush.cryptanalyzer.cooper.entity.Result;
 import com.javarush.cryptanalyzer.cooper.app.Application;
-import com.javarush.cryptanalyzer.cooper.constants.Crypt;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
+import com.javarush.cryptanalyzer.cooper.services.Analysis;
 import com.javarush.cryptanalyzer.cooper.utils.ResultCode;
-import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
-import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
 
-public class ViewListener implements ActionListener {
+public class ViewListener implements ActionListener, KeyListener {
     GUIView frame;
 
     public ViewListener(GUIView frame) {
         this.frame = frame;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        JTextField textField = (JTextField) e.getSource();
+        String sourceText = textField.getText();
+
+        if (sourceText.length() > 0) {
+            if (sourceText.length() > 1) textField.setText(String.valueOf(sourceText.charAt(0)));
+            if (CryptoAlphabet.CAESAR_ALPHABET.indexOf(sourceText.charAt(0)) == -1) textField.setText("");
+        }
     }
 
     @Override
@@ -42,7 +65,11 @@ public class ViewListener implements ActionListener {
                 bruteForce();
                 break;
             case AppWindow.ANALYSIS:
-                analyse();
+                try {
+                    frame.showAnalyticDialog(analyse());
+                } catch (IOException ex) {
+                    frame.showResult(new Result(ResultCode.ERROR, ex));
+                }
                 break;
             case AppWindow.OPEN_FILE:
                 try {
@@ -55,6 +82,13 @@ public class ViewListener implements ActionListener {
                 try {
                     Desktop.getDesktop().open(Path.of(frame.getResultFileName()).toAbsolutePath().getParent().toFile());
                 } catch (IOException ex) {
+                    frame.showResult(new Result(ResultCode.ERROR, ex));
+                }
+                break;
+            case AppDialog.CHANGE:
+                try {
+                    changeSymbolPairs();
+                } catch (IOException|UserException ex) {
                     frame.showResult(new Result(ResultCode.ERROR, ex));
                 }
                 break;
@@ -77,7 +111,7 @@ public class ViewListener implements ActionListener {
                 frame.getKey(),
                 frame.getCryptFileName()
             });
-            Path file = frame.saveTextToFile(encodedText, DefaultFiles.ENCODED_FILE);
+            Path file = frame.saveTextToFile(encodedText, DefaultValues.ENCODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
             frame.showResult(new Result(ResultCode.ERROR, ex));
@@ -94,7 +128,7 @@ public class ViewListener implements ActionListener {
                 frame.getKey(),
                 frame.getCryptFileName()
             });
-            Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
+            Path file = frame.saveTextToFile(decodedText, DefaultValues.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
             frame.showResult(new Result(ResultCode.ERROR, ex));
@@ -111,7 +145,7 @@ public class ViewListener implements ActionListener {
                 frame.getKey(),
                 frame.getCryptFileName()
             });
-            Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
+            Path file = frame.saveTextToFile(decodedText, DefaultValues.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
         } catch (Exception ex) {
             frame.showResult(new Result(ResultCode.ERROR, ex));
@@ -119,9 +153,9 @@ public class ViewListener implements ActionListener {
     }
 
     /**
-     * Расшифровка анализом
+     * @return - возвращает путь к расшифрованному файлу методом анализа
      */
-    private void analyse() {
+    private Path analyse() {
         try {
             String decodedText = Application.crypt(new String[]{
                 Crypt.ANALYSIS,
@@ -129,10 +163,29 @@ public class ViewListener implements ActionListener {
                 frame.getCryptFileName(),
                 frame.getDictionaryFileName()
             });
-            Path file = frame.saveTextToFile(decodedText, DefaultFiles.DECODED_FILE);
+            Path file = frame.saveTextToFile(decodedText, DefaultValues.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
+            return file;
         } catch (IOException ex) {
             frame.showResult(new Result(ResultCode.ERROR, ex));
         }
+        return null;
+    }
+
+    /**
+     * Меняет в расшифровываемом тексте пары символов
+     * @throws IOException
+     */
+    private void changeSymbolPairs() throws IOException {
+        String text = frame.getDecodedTextArea().getText();
+        String firstCharFrom = frame.getSymbolFromFirstPairField().getText();
+        String firstCharTo = frame.getSymbolToFirstPairField().getText();
+
+        if (firstCharFrom.length() < 1 || firstCharTo.length() < 1)
+            throw new UserException(ExceptionConstant.ENTER_SYMBOL_PAIR);
+
+        String resultText = Analysis.changeSymbolPairs(text, firstCharFrom.charAt(0), firstCharTo.charAt(0));
+        frame.saveTextToFile(resultText, DefaultValues.DECODED_FILE);
+        frame.getDecodedTextArea().setText(resultText);
     }
 }

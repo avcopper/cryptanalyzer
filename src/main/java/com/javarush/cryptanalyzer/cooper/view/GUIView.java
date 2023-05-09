@@ -9,9 +9,11 @@ import java.nio.file.Path;
 import javax.swing.border.EmptyBorder;
 import java.nio.file.StandardOpenOption;
 import javax.swing.filechooser.FileFilter;
+
+import com.javarush.cryptanalyzer.cooper.constants.AppDialog;
 import com.javarush.cryptanalyzer.cooper.constants.AppResult;
 import com.javarush.cryptanalyzer.cooper.constants.AppWindow;
-import com.javarush.cryptanalyzer.cooper.constants.DefaultFiles;
+import com.javarush.cryptanalyzer.cooper.constants.DefaultValues;
 import com.javarush.cryptanalyzer.cooper.entity.Result;
 
 public class GUIView extends JFrame implements View {
@@ -24,6 +26,9 @@ public class GUIView extends JFrame implements View {
     JTextField offsetTextField;
     JLabel messageLabel, resultFileLabel;
     JButton fileOpenButton, dirOpenButton;
+
+    private JTextArea decodedTextArea;
+    private JTextField symbolFromFirstPairField, symbolToFirstPairField;
 
     public GUIView() {
         super(AppWindow.APP_NAME);
@@ -141,11 +146,11 @@ public class GUIView extends JFrame implements View {
 
         JButton fileButton = new JButton(AppWindow.FILE_ENCRYPT_DECRYPT);
         fileButton.setPreferredSize(dimension);
-        filePathLabel = new JLabel(DefaultFiles.INPUT_FILE);
+        filePathLabel = new JLabel(DefaultValues.INPUT_FILE);
 
         JButton fileAnalysisButton = new JButton(AppWindow.FILE_DICTIONARY);
         fileAnalysisButton.setPreferredSize(dimension);
-        dictionaryPathLabel = new JLabel(DefaultFiles.DICTIONARY_FILE);
+        dictionaryPathLabel = new JLabel(DefaultValues.DICTIONARY_FILE);
 
         offsetTextField = new JTextField();
         offsetTextField.setMinimumSize(dimension);
@@ -388,6 +393,74 @@ public class GUIView extends JFrame implements View {
      * @param message - текст ошибки
      */
     private void showError(String message) {
+        UIManager.put(DefaultValues.OPTIONPANE_MINIMUMSIZE, new Dimension(300, 100));
         JOptionPane.showMessageDialog(this, message, AppResult.ERROR, JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Показывает диалог ручной замены символов в тексте
+     * @param file - путь к изменяемому файлу
+     * @throws IOException
+     */
+    public void showAnalyticDialog(Path file) throws IOException {
+        String analyzedText = Files.readString(file);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+
+        JLabel headerLabel = new JLabel(AppDialog.MANUALLY_CHAR_REPLACEMENT);
+        headerLabel.setBounds(0, 0, 800, 30);
+        headerLabel.setFont(new Font(DefaultValues.FONT, Font.BOLD, 14));
+        headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        decodedTextArea = new JTextArea(analyzedText);
+        decodedTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(decodedTextArea);
+        scrollPane.setBounds(2, 40, 779, 400);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        JLabel commentLabel = new JLabel(AppDialog.ENTER_PAIR);
+        commentLabel.setBounds(0, 450, 800, 30);
+        commentLabel.setFont(new Font(DefaultValues.FONT, Font.BOLD, 12));
+        commentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        symbolFromFirstPairField = new JTextField();
+        symbolFromFirstPairField.setBounds(340, 480, 40, 30);
+
+        symbolToFirstPairField = new JTextField();
+        symbolToFirstPairField.setBounds(420, 480, 40, 30);
+
+        JLabel directionLabel = new JLabel(AppDialog.DIRECTION);
+        directionLabel.setBounds(393, 480, 20, 30);
+
+        JButton changeButton = new JButton(AppDialog.CHANGE);
+        changeButton.setBounds(500, 480, 200, 30);
+
+        panel.add(headerLabel);
+        panel.add(scrollPane);
+        panel.add(commentLabel);
+        panel.add(symbolFromFirstPairField);
+        panel.add(symbolToFirstPairField);
+        panel.add(directionLabel);
+        panel.add(changeButton);
+
+        changeButton.addActionListener(listener);
+        symbolFromFirstPairField.addKeyListener(listener);
+        symbolToFirstPairField.addKeyListener(listener);
+
+        UIManager.put(DefaultValues.OPTIONPANE_MINIMUMSIZE, new Dimension(800, 580));
+        JOptionPane.showMessageDialog(this, panel, AppDialog.MANUALLY_CHAR_REPLACEMENT, JOptionPane.PLAIN_MESSAGE);
+    }
+
+    public JTextArea getDecodedTextArea() {
+        return decodedTextArea;
+    }
+
+    public JTextField getSymbolFromFirstPairField() {
+        return symbolFromFirstPairField;
+    }
+
+    public JTextField getSymbolToFirstPairField() {
+        return symbolToFirstPairField;
     }
 }
