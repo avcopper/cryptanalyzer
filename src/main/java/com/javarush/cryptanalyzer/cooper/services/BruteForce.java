@@ -26,7 +26,7 @@ public class BruteForce implements CryptFunction {
                 caesar.setOffset(offset);
                 cryptString = caesar.crypt(lines);
 
-                Pattern aPattern = Pattern.compile("^[А-Я](,?|[а-яё]*) ([а-яё ]*(, )*)*\\.$", Pattern.MULTILINE);
+                Pattern aPattern = Pattern.compile("^[А-ЯЁ]{1}(,|[а-яё])*(\\s)*( [а-яё]+,?)*([\\.\\?!])$", Pattern.MULTILINE);
                 Matcher aMatcher = aPattern.matcher(cryptString);
 
                 if (aMatcher.find()) return cryptString;
