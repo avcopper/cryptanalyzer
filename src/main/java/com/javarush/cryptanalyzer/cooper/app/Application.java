@@ -32,7 +32,7 @@ public class Application {
 
     /**
      * @param mode - режим работы
-     * @return - возвращает тип функции шифрования
+     * @return - возвращает функцию шифрования
      */
     private static CryptFunction getCryptFunction(String mode) {
         return switch (mode) {
