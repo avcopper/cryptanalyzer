@@ -25,12 +25,10 @@ public class ViewListener implements ActionListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-
     }
 
     @Override
@@ -40,7 +38,7 @@ public class ViewListener implements ActionListener, KeyListener {
 
         if (sourceText.length() > 0) {
             if (sourceText.length() > 1) textField.setText(String.valueOf(sourceText.charAt(0)));
-            if (CryptoAlphabet.CAESAR_ALPHABET.indexOf(sourceText.charAt(0)) == -1) textField.setText("");
+            if (CryptoAlphabet.CAESAR_ALPHABET.indexOf(sourceText.charAt(0)) == -1) textField.setText(DefaultValues.EMPTY_STRING);
         }
     }
 
@@ -92,10 +90,10 @@ public class ViewListener implements ActionListener, KeyListener {
                     frame.showResult(new Result(ResultCode.ERROR, ex));
                 }
                 break;
-            case "About":
+            case AppWindow.ABOUT:
                 JOptionPane.showMessageDialog(frame, AppWindow.DEVELOPER_NAME, AppWindow.DEVELOPER, JOptionPane.INFORMATION_MESSAGE);
                 break;
-            case "Exit":
+            case AppWindow.EXIT:
                 System.exit(0);
                 break;
         }
