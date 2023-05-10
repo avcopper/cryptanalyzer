@@ -6,14 +6,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import com.javarush.cryptanalyzer.cooper.utils.Caesar;
-import com.javarush.cryptanalyzer.cooper.constants.ExceptionConstant;
+import com.javarush.cryptanalyzer.cooper.constants.DefaultValues;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
+import com.javarush.cryptanalyzer.cooper.constants.ExceptionConstant;
 
 public class Analysis implements CryptFunction {
     @Override
     public String execute(String[] params) throws IOException {
         try {
-            if ("".equals(params[2])) throw new UserException(ExceptionConstant.FILE_NOT_SELECTED);
+            if (DefaultValues.EMPTY_STRING.equals(params[2])) throw new UserException(ExceptionConstant.FILE_NOT_SELECTED);
 
             Path file = Path.of(params[2]);
             String encodedLines = Files.readString(file).toLowerCase();
