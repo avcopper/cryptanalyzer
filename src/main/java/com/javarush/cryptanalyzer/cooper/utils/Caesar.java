@@ -99,8 +99,8 @@ public class Caesar {
 
     public void setOffset(int offset) {
         this.offset =
-                Math.abs(offset) < CryptoAlphabet.CAESAR_ALPHABET_LENGTH ?
-                        offset :
-                        offset % CryptoAlphabet.CAESAR_ALPHABET_LENGTH;
+            Math.abs(offset) < CryptoAlphabet.CAESAR_ALPHABET_LENGTH ?
+                offset :
+                offset % CryptoAlphabet.CAESAR_ALPHABET_LENGTH;
     }
 }
