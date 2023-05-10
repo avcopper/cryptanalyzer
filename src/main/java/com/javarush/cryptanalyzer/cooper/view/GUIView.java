@@ -417,6 +417,7 @@ public class GUIView extends JFrame implements View {
         JScrollPane scrollPane = new JScrollPane(decodedTextArea);
         scrollPane.setBounds(2, 40, AppDialog.AREA_WIDTH, AppDialog.AREA_HEIGHT);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         JLabel commentLabel = new JLabel(AppDialog.ENTER_PAIR);
         commentLabel.setBounds(0, 450, AppDialog.DIALOG_WIDTH, AppDialog.FIELD_DEFAULT_HEIGHT);
