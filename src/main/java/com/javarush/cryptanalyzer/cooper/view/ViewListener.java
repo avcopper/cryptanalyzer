@@ -14,6 +14,7 @@ import com.javarush.cryptanalyzer.cooper.entity.Result;
 import com.javarush.cryptanalyzer.cooper.app.Application;
 import com.javarush.cryptanalyzer.cooper.exception.UserException;
 import com.javarush.cryptanalyzer.cooper.services.Analysis;
+import com.javarush.cryptanalyzer.cooper.utils.Caesar;
 import com.javarush.cryptanalyzer.cooper.utils.ResultCode;
 
 public class ViewListener implements ActionListener, KeyListener {
@@ -45,9 +46,9 @@ public class ViewListener implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case AppWindow.FILE_ENCRYPT_DECRYPT:
+            case AppWindow.FILE_ENCRYPT:
                 frame.clearResult();
-                frame.setCryptFileName(frame.selectFile());
+                frame.setEncryptFileName(frame.selectFile());
                 break;
             case AppWindow.FILE_DICTIONARY:
                 frame.clearResult();
@@ -106,8 +107,8 @@ public class ViewListener implements ActionListener, KeyListener {
         try {
             String encodedText = Application.crypt(new String[]{
                 Crypt.ENCRYPT,
-                frame.getKey(),
-                frame.getCryptFileName()
+                getKey(),
+                frame.getEncryptFileName()
             });
             Path file = frame.saveTextToFile(encodedText, DefaultValues.ENCODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
@@ -124,7 +125,7 @@ public class ViewListener implements ActionListener, KeyListener {
             String decodedText = Application.crypt(new String[]{
                 Crypt.DECRYPT,
                 frame.getKey(),
-                frame.getCryptFileName()
+                frame.getDecryptFileName()
             });
             Path file = frame.saveTextToFile(decodedText, DefaultValues.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
@@ -141,7 +142,7 @@ public class ViewListener implements ActionListener, KeyListener {
             String decodedText = Application.crypt(new String[]{
                 Crypt.BRUTE_FORCE,
                 frame.getKey(),
-                frame.getCryptFileName()
+                frame.getDecryptFileName()
             });
             Path file = frame.saveTextToFile(decodedText, DefaultValues.DECODED_FILE);
             frame.showResult(new Result(ResultCode.OK, file));
@@ -158,7 +159,7 @@ public class ViewListener implements ActionListener, KeyListener {
             String decodedText = Application.crypt(new String[]{
                 Crypt.ANALYSIS,
                 frame.getKey(),
-                frame.getCryptFileName(),
+                frame.getDecryptFileName(),
                 frame.getDictionaryFileName()
             });
             Path file = frame.saveTextToFile(decodedText, DefaultValues.DECODED_FILE);
@@ -171,13 +172,27 @@ public class ViewListener implements ActionListener, KeyListener {
     }
 
     /**
+     * @return - возвращает ключ шифрования
+     */
+    private String getKey() {
+        String key = frame.getKey();
+
+        if (DefaultValues.EMPTY_STRING.equals(key)) {
+            key = Caesar.generateKey();
+            frame.setKey(key);
+        }
+
+        return key;
+    }
+
+    /**
      * Меняет в расшифровываемом тексте пары символов
      * @throws IOException
      */
     private void changeSymbolPairs() throws IOException {
         String text = frame.getDecodedTextArea().getText();
-        String firstCharFrom = frame.getSymbolFromFirstPairField().getText();
-        String firstCharTo = frame.getSymbolToFirstPairField().getText();
+        String firstCharFrom = frame.getSymbolFrom().getText();
+        String firstCharTo = frame.getSymbolTo().getText();
 
         if (firstCharFrom.length() < 1 || firstCharTo.length() < 1)
             throw new UserException(ExceptionConstant.ENTER_SYMBOL_PAIR);
@@ -185,5 +200,7 @@ public class ViewListener implements ActionListener, KeyListener {
         String resultText = Analysis.changeSymbolPairs(text, firstCharFrom.charAt(0), firstCharTo.charAt(0));
         frame.saveTextToFile(resultText, DefaultValues.DECODED_FILE);
         frame.getDecodedTextArea().setText(resultText);
+        frame.setSymbolTo(DefaultValues.EMPTY_STRING);
+        frame.setSymbolFrom(DefaultValues.EMPTY_STRING);
     }
 }

@@ -21,13 +21,13 @@ public class GUIView extends JFrame implements View {
 
     ViewListener listener;
     JPanel jPanelTop, jPanelMiddle, jPanelBottom;
-    JLabel filePathLabel, dictionaryPathLabel;
+    JLabel encryptFilePathLabel, decryptFilePathLabel, dictionaryPathLabel;
     JTextField offsetTextField;
     JLabel messageLabel, resultFileLabel;
     JButton fileOpenButton, dirOpenButton;
 
     private JTextArea decodedTextArea;
-    private JTextField symbolFromFirstPairField, symbolToFirstPairField;
+    private JTextField symbolFrom, symbolTo;
 
     public GUIView() {
         super(AppWindow.APP_NAME);
@@ -143,12 +143,16 @@ public class GUIView extends JFrame implements View {
 
         JLabel userTextLabel = new JLabel(AppWindow.APP_MESSAGE);
 
-        JButton fileButton = new JButton(AppWindow.FILE_ENCRYPT_DECRYPT);
-        fileButton.setPreferredSize(dimension);
-        filePathLabel = new JLabel(DefaultValues.INPUT_FILE);
+        JButton encryptFileButton = new JButton(AppWindow.FILE_ENCRYPT);
+        encryptFileButton.setPreferredSize(dimension);
+        encryptFilePathLabel = new JLabel(DefaultValues.INPUT_FILE);
 
-        JButton fileAnalysisButton = new JButton(AppWindow.FILE_DICTIONARY);
-        fileAnalysisButton.setPreferredSize(dimension);
+        JButton decryptFileButton = new JButton(AppWindow.FILE_DECRYPT);
+        decryptFileButton.setPreferredSize(dimension);
+        decryptFilePathLabel = new JLabel(DefaultValues.ENCODED_FILE);
+
+        JButton analysisFileButton = new JButton(AppWindow.FILE_DICTIONARY);
+        analysisFileButton.setPreferredSize(dimension);
         dictionaryPathLabel = new JLabel(DefaultValues.DICTIONARY_FILE);
 
         offsetTextField = new JTextField();
@@ -163,31 +167,43 @@ public class GUIView extends JFrame implements View {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new Insets(10, 5, 0, 5);
         jPanelTop.add(userTextLabel, gridBagConstraints);
+
+
         gridBagConstraints.gridwidth = 1;
         gridBagConstraints.weightx = 0.2;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        jPanelTop.add(fileButton, gridBagConstraints);
+        jPanelTop.add(encryptFileButton, gridBagConstraints);
         gridBagConstraints.weightx = 0.8;
         gridBagConstraints.gridx = 1;
-        jPanelTop.add(filePathLabel, gridBagConstraints);
+        jPanelTop.add(encryptFilePathLabel, gridBagConstraints);
+
         gridBagConstraints.weightx = 0.2;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        jPanelTop.add(fileAnalysisButton, gridBagConstraints);
+        jPanelTop.add(decryptFileButton, gridBagConstraints);
+        gridBagConstraints.weightx = 0.8;
+        gridBagConstraints.gridx = 1;
+        jPanelTop.add(decryptFilePathLabel, gridBagConstraints);
+
+
+        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        jPanelTop.add(analysisFileButton, gridBagConstraints);
         gridBagConstraints.weightx = 0.8;
         gridBagConstraints.gridx = 1;
         jPanelTop.add(dictionaryPathLabel, gridBagConstraints);
         gridBagConstraints.weightx = 0.2;
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         jPanelTop.add(offsetTextField, gridBagConstraints);
         gridBagConstraints.weightx = 0.8;
         gridBagConstraints.gridx = 1;
         jPanelTop.add(offsetLabel, gridBagConstraints);
 
-        fileButton.addActionListener(listener);
-        fileAnalysisButton.addActionListener(listener);
+        decryptFileButton.addActionListener(listener);
+        analysisFileButton.addActionListener(listener);
     }
 
     /**
@@ -274,17 +290,24 @@ public class GUIView extends JFrame implements View {
     }
 
     /**
-     * @return - возвращает сдвиг для шифрования, введенный пользователем
+     * @return - возвращает ключ шифрования
      */
     public String getKey() {
         return offsetTextField.getText();
     }
 
     /**
-     * @return - возвращает файл для шифрования/расшифровки
+     * @return - возвращает файл для шифрования
      */
-    public String getCryptFileName() {
-        return filePathLabel.getText();
+    public String getEncryptFileName() {
+        return encryptFilePathLabel.getText();
+    }
+
+    /**
+     * @return - возвращает файл для расшифровки
+     */
+    public String getDecryptFileName() {
+        return decryptFilePathLabel.getText();
     }
 
     /**
@@ -302,11 +325,26 @@ public class GUIView extends JFrame implements View {
     }
 
     /**
-     * Записывает путь к выбранному файлу
-     * @param path - путь к файлу
+     * Записывает ключ шифрования в поле
      */
-    public void setCryptFileName(String path) {
-        filePathLabel.setText(path);
+    public void setKey(String key) {
+        offsetTextField.setText(key);
+    }
+
+    /**
+     * Записывает путь к выбранному файлу
+     * @param path - путь к файлу для шифрования
+     */
+    public void setEncryptFileName(String path) {
+        encryptFilePathLabel.setText(path);
+    }
+
+    /**
+     * Записывает путь к выбранному файлу
+     * @param path - путь к файлу для расшифровки
+     */
+    public void setDecryptFileName(String path) {
+        decryptFilePathLabel.setText(path);
     }
 
     /**
@@ -424,11 +462,11 @@ public class GUIView extends JFrame implements View {
         commentLabel.setFont(new Font(DefaultValues.FONT, Font.BOLD, 12));
         commentLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        symbolFromFirstPairField = new JTextField();
-        symbolFromFirstPairField.setBounds(340, 480, AppDialog.CHAR_FIELD_WIDTH, AppDialog.FIELD_DEFAULT_HEIGHT);
+        symbolFrom = new JTextField();
+        symbolFrom.setBounds(340, 480, AppDialog.CHAR_FIELD_WIDTH, AppDialog.FIELD_DEFAULT_HEIGHT);
 
-        symbolToFirstPairField = new JTextField();
-        symbolToFirstPairField.setBounds(420, 480, AppDialog.CHAR_FIELD_WIDTH, AppDialog.FIELD_DEFAULT_HEIGHT);
+        symbolTo = new JTextField();
+        symbolTo.setBounds(420, 480, AppDialog.CHAR_FIELD_WIDTH, AppDialog.FIELD_DEFAULT_HEIGHT);
 
         JLabel directionLabel = new JLabel(AppDialog.DIRECTION);
         directionLabel.setBounds(393, 480, AppDialog.CHAR_DIRECTION_WIDTH, AppDialog.FIELD_DEFAULT_HEIGHT);
@@ -439,14 +477,14 @@ public class GUIView extends JFrame implements View {
         panel.add(headerLabel);
         panel.add(scrollPane);
         panel.add(commentLabel);
-        panel.add(symbolFromFirstPairField);
-        panel.add(symbolToFirstPairField);
+        panel.add(symbolFrom);
+        panel.add(symbolTo);
         panel.add(directionLabel);
         panel.add(changeButton);
 
         changeButton.addActionListener(listener);
-        symbolFromFirstPairField.addKeyListener(listener);
-        symbolToFirstPairField.addKeyListener(listener);
+        symbolFrom.addKeyListener(listener);
+        symbolTo.addKeyListener(listener);
 
         UIManager.put(DefaultValues.OPTIONPANE_MINIMUM_SIZE, new Dimension(AppDialog.DIALOG_WIDTH, AppDialog.DIALOG_HEIGHT));
         JOptionPane.showMessageDialog(this, panel, AppDialog.MANUALLY_CHAR_REPLACEMENT, JOptionPane.PLAIN_MESSAGE);
@@ -456,11 +494,19 @@ public class GUIView extends JFrame implements View {
         return decodedTextArea;
     }
 
-    public JTextField getSymbolFromFirstPairField() {
-        return symbolFromFirstPairField;
+    public JTextField getSymbolFrom() {
+        return symbolFrom;
     }
 
-    public JTextField getSymbolToFirstPairField() {
-        return symbolToFirstPairField;
+    public JTextField getSymbolTo() {
+        return symbolTo;
+    }
+
+    public void setSymbolFrom(String symbol) {
+        symbolFrom.setText(symbol);
+    }
+
+    public void setSymbolTo(String symbol) {
+        symbolTo.setText(symbol);
     }
 }
