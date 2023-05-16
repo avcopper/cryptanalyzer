@@ -2,7 +2,7 @@ package com.javarush.cryptanalyzer.cooper.constants;
 
 public class AppWindow {
     public static final int DEFAULT_WIDTH = 500;
-    public static final int DEFAULT_HEIGHT = 470;
+    public static final int DEFAULT_HEIGHT = 500;
 
     public static final String APP_NAME = "Crypto";
     public static final String DEVELOPER = "Developer";
@@ -13,7 +13,7 @@ public class AppWindow {
                     "<ol style=\"margin: 0 0 0 15px;\">" +
                         "<li>Выберите файл для шифрования/расшифровки, либо воспользуйтесь файлом по умолчанию</li>" +
                         "<li>Выберите файл словаря, либо воспользуйтесь файлом по умолчанию (для режима анализа)</li>" +
-                        "<li>Введите ключ шифрования</li>" +
+                        "<li>Введите ключ шифрования, либо он будет сгенерирован</li>" +
                     "</ol>" +
                 "</div>" +
             "</html>";
@@ -28,8 +28,9 @@ public class AppWindow {
     public static final String ABOUT = "About";
     public static final String EXIT = "Exit";
 
-    public static final String KEY = "Key";
-    public static final String FILE_ENCRYPT_DECRYPT = "File for encrypt/decrypt";
+    public static final String KEY = "key";
+    public static final String FILE_ENCRYPT = "File for encrypt";
+    public static final String FILE_DECRYPT = "File for decrypt";
     public static final String FILE_DICTIONARY = "Dictionary file";
     public static final String OPEN_FILE = "Open file";
     public static final String OPEN_DIR = "Open dir";
