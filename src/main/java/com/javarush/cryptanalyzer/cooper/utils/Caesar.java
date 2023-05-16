@@ -93,6 +93,14 @@ public class Caesar {
         return new ArrayList<>(sortedCharsMap.keySet());
     }
 
+    /**
+     * @return - возвращает сгенерированный ключ шифрования
+     */
+    public static String generateKey() {
+        int random = (int) (1 + Math.random() * (CryptoAlphabet.CAESAR_ALPHABET_LENGTH - 1));
+        return String.valueOf(random);
+    }
+
     public int getOffset() {
         return offset;
     }
