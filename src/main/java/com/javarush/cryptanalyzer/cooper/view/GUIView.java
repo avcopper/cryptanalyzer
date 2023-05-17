@@ -202,6 +202,7 @@ public class GUIView extends JFrame implements View {
         gridBagConstraints.gridx = 1;
         jPanelTop.add(offsetLabel, gridBagConstraints);
 
+        encryptFileButton.addActionListener(listener);
         decryptFileButton.addActionListener(listener);
         analysisFileButton.addActionListener(listener);
     }

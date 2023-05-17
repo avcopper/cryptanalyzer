@@ -50,6 +50,10 @@ public class ViewListener implements ActionListener, KeyListener {
                 frame.clearResult();
                 frame.setEncryptFileName(frame.selectFile());
                 break;
+            case AppWindow.FILE_DECRYPT:
+                frame.clearResult();
+                frame.setDecryptFileName(frame.selectFile());
+                break;
             case AppWindow.FILE_DICTIONARY:
                 frame.clearResult();
                 frame.setDictionaryFileName(frame.selectFile());
